@@ -6,19 +6,12 @@
 /*   By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 11:54:36 by mjulliat          #+#    #+#             */
-/*   Updated: 2022/11/02 17:24:23 by mjulliat         ###   ########.fr       */
+/*   Updated: 2022/11/10 13:19:04 by mjulliat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fractol.h>
-
-typedef	struct	s_data {
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_len;
-	int		endian;
-}			t_data;
+#include <stdio.h>
 
 void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 {
@@ -28,38 +21,106 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
+int fractal_init(t_data *prog, t_cord *pos);
+void	calcul_real_and_im(t_data *prog, t_cord *pos, t_nbcomp *nbr);
+void	pixel_to_comp(t_cord *pos, t_nbcomp *nbr);
+double	ft_norme_complex(t_nbcomp *nbr);
+
 int	main(void)
 {
-	void	*mlx;
-	void	*mlx_win;
-	int		i;
-	int		i1;
-	int		j;
-	int		j1;
-	long long int
-	t_data	test;
+	t_data		prog;
+	t_cord		pos;
 
-	i = 0;
-	j = 0;
-	j1 = 500;
-	i1 = 500;
-	mlx = mlx_init();
-	mlx_win = mlx_new_window(mlx, 1920, 1080, "Hello, PH");
-	test.img = mlx_new_image(mlx, 1920, 1080);
-	test.addr = mlx_get_data_addr(test.img, &test.bits_per_pixel, &test.line_len,
-			&test.endian);
-	while (i < 500)
+	prog.mlx = mlx_init();
+	pos.x = 0;
+	pos.y = 0;
+	prog.win = mlx_new_window(prog.mlx, WIN_LEN, WIN_HIGH, "Hello, PH");
+	prog.img = mlx_new_image(prog.mlx, WIN_LEN, WIN_HIGH);
+	prog.addr = mlx_get_data_addr(prog.img, &prog.bits_per_pixel, &prog.line_len,
+			&prog.endian);
+/*	while (pos.y < WIN_HIGH)
 	{
-		my_mlx_pixel_put(&test, 1, i, 0x00FF0000);
-		my_mlx_pixel_put(&test, j, 1, 0x00FF0000);
-		my_mlx_pixel_put(&test, 500, i, 0x00FF0000);
-		my_mlx_pixel_put(&test, j, 500, 0x00FF0000);
-		j++;
-		++i;
-		j1--;
-		i1--;
+		while (pos.x < WIN_LEN)
+		{
+			if (pos.x < (WIN_LEN / 2) && pos.y <= (WIN_HIGH / 2))
+				my_mlx_pixel_put(&test, pos.x, pos.y, 0x00FF0000); // rouge -> -1 / 1
+			else if (pos.x < (WIN_LEN / 2) && pos.y > (WIN_HIGH / 2))
+				my_mlx_pixel_put(&test, pos.x, pos.y, 0x0000FF00); // vert -> -1 / -1
+			else if (pos.x >= (WIN_LEN / 2) && pos.y <= (WIN_HIGH / 2))
+				my_mlx_pixel_put(&test, pos.x, pos.y, 0x000000FF); // bleu -> 1 / 1
+			else if (pos.x >= (WIN_LEN / 2) && pos.y > (WIN_HIGH / 2))
+				my_mlx_pixel_put(&test, pos.x, pos.y, 0x00FFFF00); // jaune -> 1 / -1
+			pos.x++;
+		}
+		pos.x = 0;
+		pos.y++;
 	}
-	mlx_put_image_to_window(mlx, mlx_win, test.img, 0, 0);
-	mlx_loop(mlx);	
+	*/
+	fractal_init(&prog, &pos);
+	mlx_put_image_to_window(prog.mlx, prog.win, prog.img, 0, 0);
+	mlx_hook(prog.win, 17, 0, close, &prog);
+	mlx_hook(prog.win, 2, 0, key_hook, &prog);
+	mlx_loop(prog.mlx);
 }
 
+int fractal_init(t_data *prog, t_cord *pos)
+{
+	t_nbcomp	nbr;
+
+	nbr.r = 0;
+	nbr.i = 0;
+	while (pos->y < WIN_HIGH)
+	{		while (pos->x < WIN_LEN)
+		{
+			calcul_real_and_im(prog, pos, &nbr);
+			pos->x++;
+		}
+		pos->x = 0;
+		pos->y++;
+	}
+	return (0);
+}
+
+void	pixel_to_comp(t_cord *pos, t_nbcomp *nbr)
+{
+	nbr->r = (2 - -2) * (((2 * pos->x) / (double)WIN_LEN) - 1);
+	nbr->i = (1 - -1) * (((-2 * pos->y) / (double)WIN_HIGH) + 1);	
+}
+
+double	ft_norme_complex(t_nbcomp *nbr)
+{
+	double res;
+
+	res = (nbr->r * nbr->r) + (nbr->i * nbr->i);
+	return (res);
+}
+
+void	ft_iter(t_nbcomp *nbr)
+{
+	double	tmp;
+
+	tmp = (nbr->r * nbr->r) - (nbr->i * nbr->i);
+	nbr->i = (2 * nbr->r) * nbr->i;
+	nbr->r = tmp -1;
+}
+
+void	calcul_real_and_im(t_data *prog, t_cord *pos, t_nbcomp *nbr)
+{
+	int		i;
+	int		max_iter;
+
+	i = 0;
+	max_iter = 200;
+	pixel_to_comp(pos, nbr);
+	while (i <= max_iter)
+	{
+		ft_iter(nbr);
+		if (ft_norme_complex(nbr) > 4)
+			break ;
+		i++;
+	}
+	if (i >= max_iter)
+		my_mlx_pixel_put(prog, pos->x, pos->y, 0x00000000); 	
+	else
+		my_mlx_pixel_put(prog, pos->x, pos->y, 0x0000FF00); 	
+}

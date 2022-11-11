@@ -6,7 +6,7 @@
 #    By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/01 12:18:20 by mjulliat          #+#    #+#              #
-#    Updated: 2022/11/02 17:43:39 by mjulliat         ###   ########.fr        #
+#    Updated: 2022/11/09 15:59:11 by mjulliat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ FLAGS		= -Wall -Werror -Wextra
 
 NAME		= fractol
 FRAMEWORK	= -framework OpenGL -framework AppKit
+A.OUT		= a.out.dSYM
 
 	### INCLUDES ###
 
@@ -29,7 +30,8 @@ MLX			= libmlx
 
 	### SOURCE FILE ###
 
-SOURCES		= main.c
+SOURCES		= main.c\
+			  hook.c
 
 	### OBJETCTS ###
 
@@ -66,7 +68,6 @@ $(OBJS_PATH)/%.o:	$(SRCS_PATH)/%.c
 					$(CC) $(FLAGS) -I$(HEADERS) -I$(MLX) -c $< -o $@ 
 					@echo "$(BLUE) ######## Creating obect file ######### $(WHITE)"
 
-
 clean:	
 			@echo "$(BLUE)######## Supressing files and library ######## $(YELLOW)"
 			make clean -C $(MLX)
@@ -79,4 +80,4 @@ fclean:		clean
 
 re:			fclean all
 
-.PHONY:		mlx clean, fclean, re,
+.PHONY:		mlx clean, fclean, re, run
