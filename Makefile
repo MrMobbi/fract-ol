@@ -6,20 +6,19 @@
 #    By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/01 12:18:20 by mjulliat          #+#    #+#              #
-#    Updated: 2022/11/09 15:59:11 by mjulliat         ###   ########.fr        #
+#    Updated: 2022/11/16 11:43:04 by mjulliat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 	### COMPILATION ###
 
-CC			= gcc 
+CC			= gcc -g
 FLAGS		= -Wall -Werror -Wextra
 
 	### EXECUTABLE ###
 
 NAME		= fractol
 FRAMEWORK	= -framework OpenGL -framework AppKit
-A.OUT		= a.out.dSYM
 
 	### INCLUDES ###
 
@@ -27,11 +26,16 @@ SRCS_PATH	= srcs
 OBJS_PATH	= objs
 HEADERS		= incl
 MLX			= libmlx
+PRINTF		= ft_printf
 
 	### SOURCE FILE ###
 
 SOURCES		= main.c\
-			  hook.c
+			  hook.c\
+			  fractal_init.c\
+			  colors.c\
+			  utils.c\
+			  set_fractal.c
 
 	### OBJETCTS ###
 
@@ -50,32 +54,39 @@ WHITE		= \033[1;37m
 
 	### RULES ###
 
-all:		mlx tmp $(NAME)
+all:		mlx tmp printf $(NAME)
 
 $(NAME):	$(OBJ) $(OBJS)
-			$(CC) $(FLAGS) -L$(MLX) -lmlx $(FRAMEWOKR) -o $@ $^ 
-			@echo "$(GREEN) ######## Project compilated ######## $(WHITE)"
+			@echo "$(BLUE)######## Obect file Created ######### $(WHITE)"
+			$(CC) $(FLAGS) -L$(MLX) -L$(PRINTF) -lftprintf -lmlx $(FRAMEWOKR) -o $@ $^ 
+			@echo "$(GREEN)######## Project Compilated ######## $(WHITE)"
+
+printf:
+			make -C $(PRINTF)
+			cp ft_printf/libftprintf.a .
+			@echo "$(CYAN)######## LIBFTPRINTF.A Created ######## $(WHITE)"
 
 mlx:
 			make -C $(MLX)
 			@cp $(MLX)/libmlx.dylib .
-			@echo "$(GREEN)######## LIBMLX.A Created ######## $(WHITE)"
+			@echo "$(CYAN)######## LIBMLX.A Created ######## $(WHITE)"
 
 tmp:		
 			@mkdir -p objs
 
 $(OBJS_PATH)/%.o:	$(SRCS_PATH)/%.c
-					$(CC) $(FLAGS) -I$(HEADERS) -I$(MLX) -c $< -o $@ 
-					@echo "$(BLUE) ######## Creating obect file ######### $(WHITE)"
+					$(CC) $(FLAGS) -I$(HEADERS) -I$(MLX) -I$(PRINTF) -c $< -o $@ 
 
 clean:	
-			@echo "$(BLUE)######## Supressing files and library ######## $(YELLOW)"
+			@echo "$(VIOLET)######## Supressing files and library ######## $(YELLOW)"
 			make clean -C $(MLX)
-			@rm -rf libmlx.dylib
+			make fclean -C $(PRINTF)
 			@rm -rf $(OBJS_PATH)
 
 
 fclean:		clean
+			@rm -rf libftprintf.a
+			@rm -rf libmlx.dylib
 			@rm -rf $(NAME)
 
 re:			fclean all
