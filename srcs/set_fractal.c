@@ -1,24 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   julia.c                                            :+:      :+:    :+:   */
+/*   set_value.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/15 17:19:53 by mjulliat          #+#    #+#             */
-/*   Updated: 2022/11/16 15:02:26 by mjulliat         ###   ########.fr       */
+/*   Created: 2022/11/16 19:03:55 by mjulliat          #+#    #+#             */
+/*   Updated: 2022/11/24 13:55:42 by mjulliat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+#include <stdio.h>
 
-void	set_fractal(t_data *prog, int ac, char **av)
+void	set_complex(t_data *p)
 {
-	if (ac < 2)
-		prog->type = FR1;
-	else if (ft_strcmp(av[1], FR1) == 0)
-		prog->type = FR1;
-	else if (ft_strcmp(av[1], FR2) == 0)
-		prog->type = FR2;
-	fractal_init(prog);
+	if (ft_strcmp(p->type, FR1) == 0)
+	{
+		p->c->r = -1.75;
+		p->c->i = 0.0;
+	}
+	else
+	{
+		p->c->r = 0.0;
+		p->c->i = 0.0;
+	}
+}
+
+int	render_next_frame(t_data *p)
+{
+	set_complex(p);
+	fractal_init(p);
+	mlx_put_image_to_window(p->mlx, p->win, p->img, 0, 0);
+	return (0);
+}
+
+void	ft_init_offset(t_data *p)
+{
+	p->complx->imag_max = 1.5;
+	p->complx->imag_min = -1.5;
+	p->complx->imag_l = 3.0;
+	p->complx->real_max = 2.0;
+	p->complx->real_min = -2.0;
+	p->complx->real_l = 4.0;
+	p->off_x = 0.0;
+	p->off_y = 0.0;
+//	p->half_h = (double)WIN_HIGH / 2;
+//	p->half_l = (double)WIN_LEN / 2;
 }

@@ -6,13 +6,13 @@
 #    By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/01 12:18:20 by mjulliat          #+#    #+#              #
-#    Updated: 2022/11/16 11:43:04 by mjulliat         ###   ########.fr        #
+#    Updated: 2022/11/16 19:04:53 by mjulliat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 	### COMPILATION ###
 
-CC			= gcc -g
+CC			= gcc -g -fsanitize=address
 FLAGS		= -Wall -Werror -Wextra
 
 	### EXECUTABLE ###
