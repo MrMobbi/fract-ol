@@ -6,7 +6,7 @@
 /*   By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/14 10:57:14 by mjulliat          #+#    #+#             */
-/*   Updated: 2022/11/24 13:35:47 by mjulliat         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:57:54 by mjulliat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,19 @@ int	fractal_init(t_data *p)
 {
 	t_nbcomp	nbr;
 
-	p->pos->x = 0.0;
-	p->pos->y = 0.0;
+	p->pos.x = 0.0;
+	p->pos.y = 0.0;
 	nbr.r = 0.0;
 	nbr.i = 0.0;
-	while (p->pos->y < WIN_HIGH)
+	while (p->pos.y < WIN_HIGH)
 	{
-		while (p->pos->x < WIN_LEN)
+		while (p->pos.x < WIN_LEN)
 		{
 			calcul_real_and_im(p, &nbr);
-			p->pos->x++;
+			p->pos.x++;
 		}
-		p->pos->x = 0;
-		p->pos->y++;
+		p->pos.x = 0;
+		p->pos.y++;
 	}
 	return (0);
 }
@@ -42,22 +42,22 @@ void	pixel_to_comp(t_data *p, double x, double y, t_nbcomp *nbr)
 	half_l = (double)WIN_LEN / 2;
 	half_h = (double)WIN_HIGH / 2;
 	if (x >= half_l)
-		nbr->r = ((x - half_l) / half_l * p->complx->real_max) + p->off_x;
+		nbr->r = ((x - half_l) / half_l * p->complx.real_max) + p->off_x;
 	else
-		nbr->r = ((half_l - x) / half_l * p->complx->real_min) + p->off_x;
+		nbr->r = ((half_l - x) / half_l * p->complx.real_min) + p->off_x;
 	if (y <= half_h)
-		nbr->i = ((half_h - y) / half_h * p->complx->imag_max) + p->off_y;
+		nbr->i = ((half_h - y) / half_h * p->complx.imag_max) + p->off_y;
 	else
-		nbr->i = ((y - half_h) / half_h * p->complx->imag_min) + p->off_y;
+		nbr->i = ((y - half_h) / half_h * p->complx.imag_min) + p->off_y;
 	if (x == 0.0 && y == 0.0)
 	{
-		nbr->r = p->complx->real_min + p->off_x;
-		nbr->i = p->complx->imag_max + p->off_y;
+		nbr->r = p->complx.real_min + p->off_x;
+		nbr->i = p->complx.imag_max + p->off_y;
 	}
 	else if (x == 0.0)
-		nbr->r = p->complx->real_min + p->off_x;
+		nbr->r = p->complx.real_min + p->off_x;
 	else if (y == 0.0)
-		nbr->i = p->complx->imag_max + p->off_y;
+		nbr->i = p->complx.imag_max + p->off_y;
 }
 
 double	ft_norme_complex(t_nbcomp *nbr)
@@ -95,14 +95,14 @@ void	calcul_real_and_im(t_data *p, t_nbcomp *nbr)
 
 	i = 0;
 	max_iter = 70;
-	pixel_to_comp(p, p->pos->x, p->pos->y, nbr);
+	pixel_to_comp(p, p->pos.x, p->pos.y, nbr);
 	if (ft_strcmp(p->type, FR1) == 0)
-		i = ft_iter_v2(nbr, p->c, i, max_iter);
+		i = ft_iter_v2(nbr, &p->c, i, max_iter);
 	else if (ft_strcmp(p->type, FR2) == 0)
-		i = ft_iter_v2(p->c, nbr, i, max_iter);
+		i = ft_iter_v2(&p->c1, nbr, i, max_iter);
 	if (i >= max_iter)
-		my_mlx_pixel_put(p, p->pos->x, p->pos->y, encode_rgb(0, 0, 0));
+		my_mlx_pixel_put(p, p->pos.x, p->pos.y, encode_rgb(0, 0, 0));
 	else
-		my_mlx_pixel_put(p, p->pos->x, p->pos->y, \
+		my_mlx_pixel_put(p, p->pos.x, p->pos.y, \
 			encode_rgb(0, 0, (255 / max_iter) * i * i));
 }

@@ -6,7 +6,7 @@
 /*   By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 13:53:14 by mjulliat          #+#    #+#             */
-/*   Updated: 2022/11/24 13:55:06 by mjulliat         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:58:07 by mjulliat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,20 +51,18 @@ typedef struct s_data {
 	void		*mlx;
 	void		*win;
 	char		*type;
-	t_nbcomp	*c;
-	t_cord		*pos;
-	t_complx	*complx;
+	t_nbcomp	c;
+	t_nbcomp	c1;
+	t_cord		pos;
+	t_complx	complx;
 	double		off_x;
 	double		off_y;
-//	double		half_l;
-//	double		half_h;
 }				t_data;
 
 //		##### MAIN.C #####
 int		ft_argerror(t_data *p, int ac, char **av);
 
 //		##### HOOK.C Proto #####
-int		fractal_close(t_data *p);
 int		key_hook(int keycode, t_data *p);
 int		mouse_hook(int bouton, int x, int y, t_data *p);
 
@@ -86,5 +84,6 @@ void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
 void	set_complex(t_data *p);
 int		render_next_frame(t_data *p);
 void	ft_init_offset(t_data *p);
+int		fractal_close(t_data *p);
 
 #endif

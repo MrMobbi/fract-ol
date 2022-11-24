@@ -6,7 +6,7 @@
 /*   By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 11:54:36 by mjulliat          #+#    #+#             */
-/*   Updated: 2022/11/24 13:54:41 by mjulliat         ###   ########.fr       */
+/*   Updated: 2022/11/24 14:54:58 by mjulliat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ int	main(int ac, char **av)
 {
 	t_data	p;
 
-	ft_init_offset(&p);
 	if (ft_argerror(&p, ac, av) == 1)
 		return (0);
+	ft_init_offset(&p);
 	p.mlx = mlx_init();
 	p.win = mlx_new_window(p.mlx, WIN_LEN, WIN_HIGH, p.type);
 	p.img = mlx_new_image(p.mlx, WIN_LEN, WIN_HIGH);

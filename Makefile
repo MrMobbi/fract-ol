@@ -6,7 +6,7 @@
 #    By: mjulliat <marvin@42lausanne.ch>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/01 12:18:20 by mjulliat          #+#    #+#              #
-#    Updated: 2022/11/16 19:04:53 by mjulliat         ###   ########.fr        #
+#    Updated: 2022/11/24 15:13:19 by mjulliat         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -91,4 +91,4 @@ fclean:		clean
 
 re:			fclean all
 
-.PHONY:		mlx clean, fclean, re, run
+.PHONY:		mlx clean, fclean, re, printf, tmp 
